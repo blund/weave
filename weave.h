@@ -9,6 +9,9 @@ Det siste eller de to siste variablene er som regel 'ut'-variabler. Disse vil al
 'Inn'-variabler er alltid const, med mindre de faktisk skal muteres (trim-funksjonene).
 
 
+
+Et av målene er å 'veve' sammen funksjonaliteten her med ordinær c-funksjonalitet. Det vil si at man bare skal kunne passe en 'str' direkte til en c-funksjon (som ikke muterer den), og at alt bare skal fungere. I tillegg skal headeren tilby trygge funksjoner som er lette å bruke.
+
 */
 
 
@@ -26,7 +29,7 @@ typedef struct str {
 } str;
 
 
-#define WV(x) (str){ .str = x, .len = sizeof x }
+#define WV(x) (str){ .str = x, .len = sizeof(x) - 1}
 
 
 void wvCons    (const str *a, const str *b, str *s);
@@ -42,14 +45,17 @@ int  wvTrimRight (str *a);
 
 
 void wvCons(const str *a, const str *b, str *s) {
-  s->len = a->len + b->len - 1; // Trekk fra 1 for å gjøre opp for 0-terminator
-  s->str = malloc(s->len);
+  s->len = a->len + b->len; // Trekk fra 1 for å gjøre opp for 0-terminator
+  s->str = malloc(s->len + 1);
   for (int i = 0; i < a->len; i++) {
     s->str[i] = a->str[i];
   }
+  
   for (int i = 0; i < b->len; i++) {
-    s->str[a->len - 1 + i] = b->str[i];
+    s->str[a->len + i] = b->str[i];
   }
+  s->str[s->len] = 0;
+  
 }
 
 
@@ -58,7 +64,7 @@ void wvSplitAt(const str *s, int pos, str *a, str *b) {
   assert(s->len >= pos);
   
   a->len = pos;
-  b->len = s->len - pos;
+  b->len = s->len - pos - 1;
 
   // Alloker minne for både a og b, og fordel etterpå
   char *tmp = malloc(a->len + b->len);
@@ -73,7 +79,7 @@ void wvSplitAt(const str *s, int pos, str *a, str *b) {
   a->str[a->len] = 0;
 
   for (int i = 0; i < s->len - pos; i++) {
-    b->str[i] = s->str[pos + i];
+    b->str[i] = s->str[pos + i + 1];
   }
   b->str[b->len] = 0;
 }
@@ -92,9 +98,9 @@ int wvSplitOn(const str *s, char c, str *a, str *b) {
       a->len = i;
       a->str[i] = 0;
         
-      b->len = s->len - i;
+      b->len = s->len - i - 1;
       b->str = tmp + i + 1; // Legg til 1, siden vi setter inn 0-terminal i forrige streng hvor det var en separator
-      b->str[s->len] = 0;
+      b->str[b->len] = 0;
     }
   }
   
@@ -148,7 +154,7 @@ int wvTrimLeft(str *a) {
 
 
 int wvTrimRight(str *a) {
-  char *c = a->str + a->len - 2;
+  char *c = a->str + a->len - 1;
   int count = 0;
   
   while (*c == ' ' || *c == '\t' || *c == '\n') {
@@ -157,10 +163,11 @@ int wvTrimRight(str *a) {
   }
 
   a->len -= count;
-  a->str[a->len-1] = 0;
+  a->str[a->len] = 0;
 
   return count;
 }
+
 
 int wvTrim(str *a) {
   int count = 0;
