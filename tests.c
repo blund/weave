@@ -134,7 +134,7 @@ int main() {
   print_status("wvTrimRight");
 
 
-  
+  // Test wvTrim
   str wvTrim_test;
   str wvTrim_right;
   count;
