@@ -29,22 +29,22 @@ typedef struct str {
 } str;
 
 
-#define WV(x) (str){ .str = x, .len = sizeof(x) - 1}
+#define WV(x) (str){ .str = x, .len = sizeof(x) - 1}  // Trekk fra 1, siden vi ikke vil telle med 0-terminatoren
 
 
-void wvCons    (const str *a, const str *b, str *s);
-int  wvCmp     (const str *a, const str *b);
-int  wvCopy    (const str *a, str *s);
+void wvCons    (const str *a, const str *b, str *s);  // Sett sammen to strenger
+int  wvCmp     (const str *a, const str *b);          // Sammenlign to strenger
+int  wvCopy    (const str *a, str *s);                // Kopier en streng til enn annen (dyp kopi med ny allokering)
 
-void wvSplitAt (const str *s, int pos, str *a, str *b);
-int  wvSplitOn (const str *s, char c, str *a, str *b);
+void wvSplitAt (const str *s, int pos, str *a, str *b);  // Splitt ved indeks
+int  wvSplitOn (const str *s, char c, str *a, str *b);   // Splitt på tegn
 
-int  wvTrim      (str *a);
-int  wvTrimLeft  (str *a);
-int  wvTrimRight (str *a);
+int  wvTrim      (str *a);  // Fjern whitespace
+int  wvTrimLeft  (str *a);  // Fjern whitespace til venstre
+int  wvTrimRight (str *a);  // Fjern whitespace til høyre
 
-int  wvCheckNullTermination(const str *s);
-void wvPrint(const str *s);
+int  wvValidateString(const str *s);  // Sjekk at lengden på strengen stemmer med 0-termineringen, og sjekk at det er en 0-terminering der den skal være
+void wvPrint(const str *s);           // Print streng og lengde
 
 
 
@@ -183,10 +183,17 @@ int wvTrim(str *a) {
   return count;
 }
 
+
+
+//
+// Debug-prosedyrer
+//
+
 void wvValidateString(const str *s) {
   assert(strlen(s->str) == s->len);
   assert(s->str[s->len] == '\0');
 }
+
 
 void wvPrint(const str *s) {
   printf("%s (%i)\n", s->str, s->len);
