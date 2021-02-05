@@ -21,7 +21,7 @@ Et av målene er å 'veve' sammen funksjonaliteten her med ordinær c-funksjonal
 
 #include <malloc.h>
 #include <assert.h>
-
+#include <string.h> // For strlen for testing purposes
 
 typedef struct str {
   char *str;
@@ -42,6 +42,12 @@ int  wvSplitOn (const str *s, char c, str *a, str *b);
 int  wvTrim      (str *a);
 int  wvTrimLeft  (str *a);
 int  wvTrimRight (str *a);
+
+int  wvCheckNullTermination(const str *s);
+void wvPrint(const str *s);
+
+
+
 
 
 void wvCons(const str *a, const str *b, str *s) {
@@ -67,11 +73,11 @@ void wvSplitAt(const str *s, int pos, str *a, str *b) {
   b->len = s->len - pos - 1;
 
   // Alloker minne for både a og b, og fordel etterpå
-  char *tmp = malloc(a->len + b->len);
+  char *tmp = malloc(s->len + 2);
   a->str = tmp;
-  b->str = tmp + pos;
+  b->str = tmp + pos + 2; // +1 for 'a' sin terminator og +1 for plassen etter
   
-  b->str = malloc(b->len);
+  //b->str = malloc(b->len);
   
   for (int i = 0; i < pos ; i++) {
     a->str[i] = s->str[i];
@@ -82,6 +88,7 @@ void wvSplitAt(const str *s, int pos, str *a, str *b) {
     b->str[i] = s->str[pos + i + 1];
   }
   b->str[b->len] = 0;
+
 }
 
 
@@ -176,8 +183,13 @@ int wvTrim(str *a) {
   return count;
 }
 
+void wvValidateString(const str *s) {
+  assert(strlen(s->str) == s->len);
+  assert(s->str[s->len] == '\0');
+}
 
-
-
+void wvPrint(const str *s) {
+  printf("%s (%i)\n", s->str, s->len);
+}
 
 #endif

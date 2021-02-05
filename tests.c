@@ -1,5 +1,9 @@
 #include "weave.h"
 
+int passed;
+void print_status(char *fun_name);
+
+
 int main() {
 
   // Test wvCmp
@@ -20,7 +24,7 @@ int main() {
   cmp_test_b = WV("B");
 
   assert(!wvCmp(&cmp_test_a, &cmp_test_b));
-  printf("wvCmp tests passed\n");
+  print_status("wvCmp");
 
   
   // Test wvCons
@@ -36,7 +40,8 @@ int main() {
   wvCons(&cons_test_a, &cons_test_b, &cons_test_res);
 
   assert(wvCmp(&cons_test_res, &cons_test_right));
-  printf("wvCons tests passed\n");
+  wvValidateString(&cons_test_res);
+  print_status("wvCons");
 
 
   
@@ -55,7 +60,9 @@ int main() {
 
   assert(wvCmp(&splitAt_test_res_a, &splitAt_test_a));
   assert(wvCmp(&splitAt_test_res_b, &splitAt_test_b));
-  printf("wvSplitAt tests passed\n");
+  wvValidateString(&splitAt_test_a);
+  wvValidateString(&splitAt_test_b);
+  print_status("wvSplitAt");
 
 
   
@@ -74,7 +81,9 @@ int main() {
 
   assert(wvCmp(&splitOn_test_res_a, &splitOn_test_a)); 
   assert(wvCmp(&splitOn_test_res_b, &splitOn_test_b));
-  printf("wvSplitOn tests passed\n");
+  wvValidateString(&splitOn_test_a);
+  wvValidateString(&splitOn_test_b);
+  print_status("wvSplitOn");
 
 
   
@@ -89,6 +98,7 @@ int main() {
   count = wvTrimLeft(&wvTrimLeft_test);
   assert(count == 4);
   assert(wvCmp(&wvTrimLeft_test, &wvTrimLeft_right));
+  
 
   wvTrimLeft_test  = WV("A    ");
   wvTrimLeft_right = WV("A    "); 
@@ -96,7 +106,8 @@ int main() {
   count = wvTrimLeft(&wvTrimLeft_test);
   assert(count == 0);
   assert(wvCmp(&wvTrimLeft_test, &wvTrimLeft_right));
-  printf("wvTrimLeft tests passed\n");
+  wvValidateString(&wvTrimLeft_test);
+  print_status("wvTrimLeft");
 
 
   
@@ -119,7 +130,8 @@ int main() {
   count = wvTrimRight(&wvTrimRight_test);
   assert(count == 0);
   assert(wvCmp(&wvTrimRight_test, &wvTrimRight_right));
-  printf("wvTrimRight tests passed\n");
+  wvValidateString(&wvTrimRight_test);
+  print_status("wvTrimRight");
 
 
   
@@ -142,10 +154,12 @@ int main() {
   count = wvTrim(&wvTrim_test);
   assert(count == 0);
   assert(wvCmp(&wvTrim_test, &wvTrim_right));
-  printf("wvTrim tests passed\n");
+  wvValidateString(&wvTrim_test);
+  print_status("wvTrim");
 
 
+}
 
-
-
+void print_status(char *fun_name) {
+  printf("\tTests Passed for %s\n", fun_name);
 }
