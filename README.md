@@ -22,6 +22,6 @@ The goal is to be able to use strings in my game engine without my hair turning 
 # TODO!
 * Add an update function, to be called after a string has been used with a normal C function to update it's line length.
 * Add string formatting, hopefully type safe formatting using C11 magic.
-* Maybe eliminate some ```mallocs``` by allocating a memory pool for the library to use.. We'll see!
+* Maybe eliminate some ```malloc```s by allocating a memory pool for the library to use.. We'll see!
 
 More details soon!
